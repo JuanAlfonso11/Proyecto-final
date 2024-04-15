@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URLs</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <script src="https://kit.fontawesome.com/41bcea2ae3.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/qrcode.js}"></script>
+
+    <style>
+        * {
+            font-family: 'Jockey One', sans-serif;
+        }
+
+        .codigoQR {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1rem 0;
+            width: 100%;
+        }
+
+        .card {
+            display: flex;
+            background-color: #B3E5FC; /* Lighter, brighter shade of blue */
+            height: 22.5rem;
+            padding: 1rem;
+            border-radius: 2rem;
+            border: none;
+            width: 100%;
+            align-items: center;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            background-color: #81D4FA; /* Brighter blue for hover */
+        }
+
+        .card h5 {
+            text-decoration: none;
+            text-align: center;
+            color: #004D40; /* Deeper teal for text */
+            font-size: 2rem;
+            line-height: 1.5rem;
+            max-height: calc(1.5rem * 2);
+            overflow: hidden;
+            width: 20rem;
+        }
+
+        .btn-resumen {
+            background-color: #00ACC1; /* Brighter cyan */
+            font-size: 1.5rem;
+            border-radius: 1.5rem;
+            border: none;
+            padding: 0.5rem 1rem;
+            text-align: center;
+            text-decoration: none;
+            color: #FFFFFF; /* White text for better contrast */
+            width: 10rem;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-resumen:hover {
+            width: 12rem;
+        }
+
+        .url-acortada {
+            text-decoration: none;
+            text-align: center;
+            color: #D50000; /* Vivid red */
+            font-size: 1rem;
+            line-height: 1.5rem;
+            max-height: calc(1.5rem * 1);
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .url-original {
+            text-decoration: none;
+            text-align: center;
+            color: #0D47A1; /* Vivid blue */
+            font-size: 1rem;
+            line-height: 1.5rem;
+            max-height: calc(1.5rem * 2);
+            overflow: hidden;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .input-url {
+            background-color: #B3E5FC; /* Matching input background */
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            width: 100%;
+            padding-left: 3rem;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            color: #01579B; /* Dark blue for contrast */
+            height: 3.5rem;
+        }
+
+        .btn-url {
+            background-color: #00ACC1; /* Consistent with other buttons */
+            border: none;
+            border-radius: 1rem;
+            color: white;
+            padding: 1rem 0;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            font-size: 1.2rem;
+            height: 3.5rem;
+        }
+
+        .input-grupo {
+            width: 100%;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            position: relative;
+            justify-content: center;
+        }
+
+        .icon {
+            font-size: 1.5rem;
+            position: absolute;
+            left: 10px;
+            color: #006064; /* Dark teal for icons */
+            width: 20px;
+        }
+
+        .btn-preview {
+            background-color: #00ACC1; /* Same vibrant cyan as other buttons */
+            color: #ffffff;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 0.4rem;
+            margin-left: 10px;
+            height: 3.5rem;
+        }
+
+        .box {
+            width: 100%;
+            height: 15rem;
+        }
+
+        #myimage {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        #urlModal {
+            border-radius: 1rem;
+        }
+
+        @media screen and (max-width: 1080px) {
+            .header-right {
+                display: none;
+            }
+        }
+    </style>
+
+</head>
+<body>
+
+<header>
+    <div class="icon__menu">
+        <i class="fas fa-bars" th:id="${btn_open}"></i>
+    </div>
+    <h2>Links</h2>
+    <div th:if="${usuario}" class="header-right">
+        <a th:href="@{/logout}" class="boton boton-login ml-3">Cerrar sesion</a>
+    </div>
+    <div th:unless="${usuario}" class="header-right">
+        <a th:href="@{/login}" class="boton boton-login ml-3">Iniciar sesion</a>
+        <a th:href="@{/register}" class="boton boton-registro">Registrarse</a>
+    </div>
+</header>
+
+<div class="menu__side" id="menu_side">
+    <div class="name__page">
+
+    </div>
+    <div class="options__menu">
+        <a th:href="@{/home}">
+            <div class="option">
+                <i class="fas fa-home" title="Inicio"></i>
+                <h4>Home</h4>
+            </div>
+        </a>
+        <a th:href="@{/urls}" class="selected">
+            <div class="option">
+                <i class="fas fa-link" title="Acortar URL"></i>
+                <h4>URLs</h4>
+            </div>
+        </a>
+        <a th:href="@{/codigoQR}">
+            <div class="option">
+                <i class="fa-solid fa-qrcode"></i>
+                <h4>Codigos QR</h4>
+            </div>
+        </a>
+
+        <div th:if="${usuario != null && usuario.tipoUsuario.toString() == 'ADMINISTRADOR'}">
+            <a th:href="@{/administrar}">
+                <div class="option">
+                    <i class="fa-solid fa-lock"></i>
+                    <h4>Administrar</h4>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+
+<main>
+    <div class="container" style="padding-top: 2rem">
+        <div class="row d-flex flex-wrap">
+
+            <div th:unless="${#lists.isEmpty(urls)}" class="col-sm-12 col-md-6 col-lg-4 mb-4" onclick="openModal();" style="height: 22.5rem; cursor: pointer">
+                <div class="card" style="background-color: #BE0000; height: 100%; display: flex; justify-content: center; align-items: center;">
+                    <i class="fa-solid fa-plus" style="color: #DDE6E9; font-size: 5rem; display: flex; justify-content: center; align-items: center;"></i>
+                </div>
+            </div>
+
+            <div th:each="url : ${urls}" class="col-sm-12 col-md-6 col-lg-4 mb-4">
+                <div class="card">
+                    <div data-url="@{'/id/' + ${url.hash}}" th:id="'qrcode-' + ${url.id}" class="codigoQR" onclick="handleClick(this)">
+                        <h5 th:text="${url.titulo}">Title</h5>
+                    </div>
+                    <script>
+                        function handleClick(element) {
+                            var url = element.getAttribute('data-url');
+                            window.location.href = url;
+                        }
+                    </script>
+                    <a th:href="@{'/' + ${url.hash}}">
+                        <p class="url-acortada" th:text="${url.direccion}">Short URL</p>
+                    </a>
+                    <a th:href="@{'/' + ${url.hash}}">
+                        <p class="url-original" th:text="${url.urlOriginal}">Original URL</p>
+                    </a>
+                    <a th:href="@{'/urls/resumen/' + ${url.hash}}" class="btn-resumen">Resumen</a>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(urls)}" class="col-sm-12 col-md-6 col-lg-4 mb-4">
+                <div class="card text-center align-items-center" style="background-color: #BE0000; align-content: center; height: 100%">
+                    <i class="fa-solid fa-plus" style="color: #DDE6E9; font-size: 5rem"></i>
+                    <h5>No hay URLs</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="urlModal" tabindex="-1" role="dialog" aria-labelledby="urlModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h1 style="color: #476F7A">Crear Url</h1>
+                    <form method="post" th:action="@{/urls/add}">
+                        <div class="input-grupo">
+                            <i class="fa-solid fa-heading icon"></i>
+                            <input class="input-url" type="text" id="titulo" name="titulo" placeholder="Nombre - Titulo">
+                        </div>
+                        <div class="input-grupo">
+                            <i class="fa-solid fa-link icon"></i>
+                            <input class="input-url" type="text" id="myURL" name="myURL" placeholder="youtube.com" required>
+                            <button type="button" class="btn-preview">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="box" hidden="hidden">
+                            <img id="myimage" src="">
+                        </div>
+                        <button class="btn-url" type="submit">Crear URL</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${totalPages > 1}">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center text-success">
+                <li th:classappend="${pageNumber == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{'/urls?page=' + (pageNumber - 1)}" tabindex="-1">Anterior</a>
+                </li>
+                <li th:each="page : ${#numbers.sequence(1, totalPages)}" th:classappend="${page == pageNumber} ? 'active'">
+                    <a class="page-link" th:href="@{'/urls?page=' + ${page}}" th:text="${page}"></a>
+                </li>
+                <li th:classappend="${pageNumber == totalPages} ? 'disabled'">
+                    <a class="page-link" th:href="@{'/urls?page=' + (pageNumber + 1)}">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</main>
+
+
+<script src="/js/sidebar.js"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function openModal() {
+        $('#urlModal').modal('show');
+    }
+    /*]]>*/
+</script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function () {
+        const previewButton = document.querySelector('.btn-preview');
+        if (previewButton) {
+            const previewBox = document.querySelector('.box');
+            const previewImage = document.querySelector('#myimage');
+
+            previewButton.addEventListener('click', () => {
+                const url = document.getElementById('myURL').value;
+                const data = { key: 'your-api-key', q: url }; // Replace 'your-api-key' with your actual API key
+
+                fetch('https://api.linkpreview.net', {
+                    method: 'POST',
+                    mode: 'cors',
+                    body: JSON.stringify(data),
+                })
+                    .then(res => res.json())
+                    .then(response => {
+                        if (response.image) {
+                            previewBox.removeAttribute('hidden');
+                            previewImage.src = response.image;
+                        }
+                    });
+            });
+        }
+    });
+    /*]]>*/
+</script>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+</body>
+</html>
